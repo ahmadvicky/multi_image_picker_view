@@ -21,6 +21,8 @@ class _Custom1State extends State<Custom1> {
         title: Text('Custom 1'),
       ),
       body: MultiImagePickerView(
+        title: "Add Image",
+        subtitle: "Add Image",
         controller: controller,
         padding: const EdgeInsets.all(0),
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

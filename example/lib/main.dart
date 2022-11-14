@@ -32,6 +32,8 @@ class _DemoPageState extends State<DemoPage> {
       body: Column(
         children: [
           MultiImagePickerView(
+            title: "Add Image",
+            subtitle: "Add Image",
             controller: controller,
             padding: const EdgeInsets.all(10),
           ),

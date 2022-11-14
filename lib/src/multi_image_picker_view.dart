@@ -16,6 +16,8 @@ class MultiImagePickerView extends StatefulWidget {
       this.initialContainerBuilder,
       this.gridDelegate,
       this.itemBuilder,
+        required this.title,
+        required this.subtitle,
       this.addMoreBuilder,
       this.draggable = true,
       this.onDragBoxDecoration})
@@ -36,6 +38,8 @@ class MultiImagePickerView extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
 
   final SliverGridDelegate? gridDelegate;
+  final String title;
+  final String subtitle;
 
   // final images = <String>[];
 
@@ -44,6 +48,7 @@ class MultiImagePickerView extends StatefulWidget {
 }
 
 class _MultiImagePickerViewState extends State<MultiImagePickerView> {
+
   @override
   Widget build(BuildContext context) {
     _pickImages() async {
@@ -76,8 +81,8 @@ class _MultiImagePickerViewState extends State<MultiImagePickerView> {
                 width: double.infinity,
                 height: double.infinity,
                 child: TextButton(
-                  child: const Text('Add Images',
-                      style: TextStyle(
+                  child: Text(widget.title,
+                      style: const TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.w500,
                           fontSize: 16)),
@@ -104,9 +109,9 @@ class _MultiImagePickerViewState extends State<MultiImagePickerView> {
                   onPressed: () {
                     _pickImages();
                   },
-                  child: const Text(
-                    'Add More',
-                    style: TextStyle(
+                  child: Text(
+                    widget.subtitle,
+                    style: const TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.w500,
                         fontSize: 16),
