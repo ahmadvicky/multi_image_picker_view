@@ -6,9 +6,9 @@ class ImageFile {
   final String name;
   final String extension;
   final Uint8List? bytes;
-  final String? path;
+  String? path;
   String pathThumbnail;
-  bool? isFailed;
+  bool? isFailed;r
   File? fileThumbnail;
   double? startVideo;
   double? endVideo;
