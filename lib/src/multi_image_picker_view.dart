@@ -59,6 +59,7 @@ class _MultiImagePickerViewState extends State<MultiImagePickerView> {
       }
     }
 
+
     void _deleteImage(ImageFile imageFile) {
       widget.controller.removeImage(imageFile);
       if (widget.onChange != null) {
@@ -181,7 +182,7 @@ class _MultiImagePickerViewState extends State<MultiImagePickerView> {
                       key: UniqueKey(),
                       child: widget.itemBuilder != null
                           ? widget.itemBuilder!(context, e, _deleteImage)
-                          : _ItemView(file: e, onDelete: _deleteImage),
+                          : _ItemView(file: e, onDelete: _deleteImage,isVideo: e.extension == "mp4",),
                     ))
                 .toList() +
             (widget.controller.maxImages > widget.controller.images.length
@@ -189,6 +190,10 @@ class _MultiImagePickerViewState extends State<MultiImagePickerView> {
                 : []),
       ),
     );
+  }
+
+  checkVideo(){
+
   }
 
   @override
@@ -223,10 +228,11 @@ class _MultiImagePickerViewState extends State<MultiImagePickerView> {
 }
 
 class _ItemView extends StatelessWidget {
-  const _ItemView({Key? key, required this.file, required this.onDelete})
+  const _ItemView({Key? key, required this.file, required this.onDelete,required this.isVideo})
       : super(key: key);
 
   final ImageFile file;
+  final bool isVideo;
   final Function(ImageFile path) onDelete;
 
   @override
@@ -237,7 +243,10 @@ class _ItemView extends StatelessWidget {
         Positioned.fill(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(4),
-            child: !file.hasPath
+            child: isVideo ? Image.file(
+              File(file.pathThumbnail!),
+              fit: BoxFit.cover,
+            )  : !file.hasPath
                 ? Image.memory(
                     file.bytes!,
                     fit: BoxFit.cover,

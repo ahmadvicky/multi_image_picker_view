@@ -6,6 +6,7 @@ class ImageFile {
   final String extension;
   final Uint8List? bytes;
   final String? path;
+  final String? pathThumbnail;
 
   /// returns true if image has path. (For web path is not available)
   bool get hasPath => path != null;
@@ -14,5 +15,5 @@ class ImageFile {
   int get size => bytes?.length ?? 0;
 
   ImageFile(
-      {required this.name, required this.extension, this.bytes, this.path});
+      {required this.name, required this.extension, this.bytes, this.path,this.pathThumbnail});
 }

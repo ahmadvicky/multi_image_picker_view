@@ -27,12 +27,49 @@ class MultiImagePickerController with ChangeNotifier {
   /// manually pick images. i.e. on click on external button.
   /// this method open Image picking window.
   /// It returns [Future] of [bool], true if user has selected images.
+  ///
+  // VideoPlayerController videoPlayerController;
+  // int _videoDuration = 0;
+  // int _numberOfThumbnails = 5;
+
   Future<bool> pickImages() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: true,
         type: FileType.custom,
         allowedExtensions: allowedImageTypes);
     if (result != null && result.files.isNotEmpty) {
+
+      // if (allowedImageTypes[0] == "mp4"){
+      //   result.files.e
+      //   final String _videoPath = video.path;
+      //
+      //   double _eachPart = _videoDuration / _numberOfThumbnails;
+      //
+      //   List<Uint8List> _byteList = [];
+      //   // the cache of last thumbnail
+      //   Uint8List _lastBytes;
+      //
+      //   for (int i = 1; i <= _numberOfThumbnails; i++) {
+      //     Uint8List? _bytes;
+      //     _bytes = await VideoThumbnail.thumbnailData(
+      //       video: _videoPath,
+      //       imageFormat: ImageFormat.JPEG,
+      //       timeMs: (_eachPart * i).toInt(),
+      //       quality: 75,
+      //     );
+      //
+      //     // if current thumbnail is null use the last thumbnail
+      //     if (_bytes != null) {
+      //       _lastBytes = _bytes;
+      //       _byteList.add(_bytes);
+      //     } else {
+      //       // _bytes = _lastBytes;
+      //       // _byteList.add(_bytes);
+      //     }
+      //   }
+      // }
+
+
       _addImages(result.files
           .where((e) =>
               e.extension != null &&
