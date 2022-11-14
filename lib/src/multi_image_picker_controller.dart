@@ -43,78 +43,67 @@ class MultiImagePickerController with ChangeNotifier {
         type: FileType.custom,
         allowedExtensions: allowedImageTypes);
     if (result != null && result.files.isNotEmpty) {
-
       if (allowedImageTypes[0] == "mp4"){
-        File fileori = File(result.files.first.path!);
-        // if (file)
-        veController = VideoPlayerController.file(fileori);
 
-        // result.files.e
-        final String _videoPath = fileori.path;
+        // int ive = 0;
+        result.files.forEach((element) async {
+          File fileori = File(element.path!);
+          // if (file)
+          veController = VideoPlayerController.file(fileori);
 
-        double _eachPart = _videoDuration / _numberOfThumbnails;
+          // result.files.e
+          final String _videoPath = fileori.path;
 
-        List<Uint8List> _byteList = [];
-        // the cache of last thumbnail
-        Uint8List _lastBytes;
+          double _eachPart = _videoDuration / _numberOfThumbnails;
 
-        for (int i = 1; i <= _numberOfThumbnails; i++) {
-          Uint8List? _bytes;
-          _bytes = await VideoThumbnail.thumbnailData(
-            video: _videoPath,
-            imageFormat: ImageFormat.JPEG,
-            timeMs: (_eachPart * i).toInt(),
-            quality: 75,
-          );
+          List<Uint8List> _byteList = [];
+          // the cache of last thumbnail
+          Uint8List _lastBytes;
 
-          // if current thumbnail is null use the last thumbnail
-          if (_bytes != null) {
-            _lastBytes = _bytes;
-            _byteList.add(_bytes);
-          } else {
-            // _bytes = _lastBytes;
-            // _byteList.add(_bytes);
+          for (int i = 1; i <= _numberOfThumbnails; i++) {
+            Uint8List? _bytes;
+            _bytes = await VideoThumbnail.thumbnailData(
+              video: _videoPath,
+              imageFormat: ImageFormat.JPEG,
+              timeMs: (_eachPart * i).toInt(),
+              quality: 75,
+            );
+
+            // if current thumbnail is null use the last thumbnail
+            if (_bytes != null) {
+              _lastBytes = _bytes;
+              _byteList.add(_bytes);
+            } else {
+              // _bytes = _lastBytes;
+              // _byteList.add(_bytes);
+            }
           }
-        }
 
-        if (_byteList.length > 0) {
-          final tempDir = await getTemporaryDirectory();
-          await File(
-              '${tempDir.path}${DateTime.now().toString()}-${DateTime.now().microsecondsSinceEpoch}.png')
-              .create()
-              .then((value2) {
-            value2.writeAsBytesSync(_byteList.first);
+          if (_byteList.length > 0) {
+            final tempDir = await getTemporaryDirectory();
+            await File(
+                '${tempDir.path}${DateTime.now().toString()}-${DateTime.now().microsecondsSinceEpoch}.png')
+                .create()
+                .then((value2) {
+              value2.writeAsBytesSync(_byteList.first);
 
-            _addImages(result.files
-                .where((e) =>
-            e.extension != null &&
-                allowedImageTypes.contains(e.extension?.toLowerCase()))
-                .map((e) => ImageFile(
-                name: e.name,
-                extension: e.extension!,
-                bytes: e.bytes,
-                path: !kIsWeb ? e.path : null, pathThumbnail: value2.path,fileThumbnail: value2)));
-            notifyListeners();
+              _addImages(result.files
+                  .where((e) =>
+              e.extension != null &&
+                  allowedImageTypes.contains(e.extension?.toLowerCase()))
+                  .map((e) => ImageFile(
+                  name: e.name,
+                  extension: e.extension!,
+                  bytes: e.bytes,
+                  path: !kIsWeb ? e.path : null, pathThumbnail: value2.path,fileThumbnail: value2)));
+              notifyListeners();
+            });
+          }
+        });
 
-            // videoFile.add(ImageFileUploadCommunity(
-            //     file: video,
-            //     fileAnother: fileAnother,
-            //     fileThumbnail: value2,
-            //     urlThumbnail: ""));
 
-            // setState(() {
-            //   SellonRouter.pop(context);
-            //   veController.dispose();
-            //
-            //   isLoadinguploadimage = true;
-            //   uploadSellon = false;
-            //   setState(() {
-            //     checkAgain(isVideo: true);
-            //   });
-            // });
-          });
-        }
-      } else {
+      }
+      else {
         _addImages(result.files
             .where((e) =>
         e.extension != null &&
