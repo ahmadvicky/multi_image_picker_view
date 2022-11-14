@@ -87,15 +87,18 @@ class MultiImagePickerController with ChangeNotifier {
                 .then((value2) {
               value2.writeAsBytesSync(_byteList.first);
 
-              _addImages(result.files
-                  .where((e) =>
-              e.extension != null &&
-                  allowedImageTypes.contains(e.extension?.toLowerCase()))
-                  .map((e) => ImageFile(
-                  name: e.name,
-                  extension: e.extension!,
-                  bytes: e.bytes,
-                  path: !kIsWeb ? e.path : null, pathThumbnail: value2.path,fileThumbnail: value2)));
+              ImageFile imageee = ImageFile(name: element.name, extension: element.extension!, pathThumbnail: value2.path,fileThumbnail: value2,bytes: element.bytes);
+              _addImages(result.files.where((e) => e.name == element.name).map((e) => imageee));
+
+              // _addImages(result.files
+              //     .where((e) =>
+              // e.extension != null &&
+              //     allowedImageTypes.contains(e.extension?.toLowerCase()))
+              //     .map((e) => ImageFile(
+              //     name: e.name,
+              //     extension: e.extension!,
+              //     bytes: e.bytes,
+              //     path: !kIsWeb ? e.path : null, pathThumbnail: value2.path,fileThumbnail: value2)));
               notifyListeners();
             });
           }
