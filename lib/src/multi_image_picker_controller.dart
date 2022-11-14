@@ -87,7 +87,9 @@ class MultiImagePickerController with ChangeNotifier {
                 .then((value2) {
               value2.writeAsBytesSync(_byteList.first);
 
-              ImageFile imageee = ImageFile(name: element.name, extension: element.extension!, pathThumbnail: value2.path,fileThumbnail: value2,bytes: element.bytes);
+              ImageFile imageee = ImageFile(
+                  path: element.path,
+                  name: element.name, extension: element.extension!, pathThumbnail: value2.path,fileThumbnail: value2,bytes: element.bytes);
               _addImages(result.files.where((e) => e.name == element.name).map((e) => imageee));
 
               // _addImages(result.files
