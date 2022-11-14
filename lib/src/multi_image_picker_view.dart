@@ -244,7 +244,7 @@ class _ItemView extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: isVideo ? Image.file(
-              File(file.pathThumbnail!),
+              file.fileThumbnail!,
               fit: BoxFit.cover,
             )  : !file.hasPath
                 ? Image.memory(

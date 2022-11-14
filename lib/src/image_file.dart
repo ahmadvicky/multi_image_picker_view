@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 /// Store the image data and other information.
@@ -7,6 +8,7 @@ class ImageFile {
   final Uint8List? bytes;
   final String? path;
   String pathThumbnail;
+  File? fileThumbnail;
 
   /// returns true if image has path. (For web path is not available)
   bool get hasPath => path != null;
@@ -15,5 +17,5 @@ class ImageFile {
   int get size => bytes?.length ?? 0;
 
   ImageFile(
-      {required this.name, required this.extension, this.bytes, this.path,required this.pathThumbnail});
+      {required this.name, required this.extension, this.bytes, this.path,required this.pathThumbnail,this.fileThumbnail});
 }
