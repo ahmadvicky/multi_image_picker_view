@@ -10,29 +10,29 @@ import '../multi_image_picker_view.dart';
 class MultiImagePickerView extends StatefulWidget {
   const MultiImagePickerView(
       {Key? key,
-      this.onChange,
-      required this.controller,
-      this.padding,
-      this.initialContainerBuilder,
-      this.gridDelegate,
-      this.itemBuilder,
+        this.onChange,
+        required this.controller,
+        this.padding,
+        this.initialContainerBuilder,
+        this.gridDelegate,
+        this.itemBuilder,
         required this.title,
         required this.subtitle,
-      this.addMoreBuilder,
-      this.draggable = true,
-      this.onDragBoxDecoration})
+        this.addMoreBuilder,
+        this.draggable = true,
+        this.onDragBoxDecoration})
       : super(key: key);
 
   final MultiImagePickerController controller;
   final bool draggable;
   final BoxDecoration? onDragBoxDecoration;
   final Widget Function(BuildContext context, Function() pickerCallback)?
-      initialContainerBuilder;
+  initialContainerBuilder;
   final Widget Function(BuildContext context, ImageFile file,
       Function(ImageFile) deleteCallback)? itemBuilder;
 
   final Widget Function(BuildContext context, Function() pickerCallback)?
-      addMoreBuilder;
+  addMoreBuilder;
 
   final Function(Iterable<ImageFile>)? onChange;
   final EdgeInsetsGeometry? padding;
@@ -71,55 +71,55 @@ class _MultiImagePickerViewState extends State<MultiImagePickerView> {
       return widget.initialContainerBuilder != null
           ? widget.initialContainerBuilder!(context, _pickImages)
           : Container(
-              margin: widget.padding,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: Colors.blueGrey.withOpacity(0.05),
-              ),
-              height: 160,
-              width: double.infinity,
-              child: SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: TextButton(
-                  child: Text(widget.title,
-                      style: const TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16)),
-                  onPressed: () {
-                    _pickImages();
-                  },
-                ),
-              ),
-            );
+        margin: widget.padding,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Colors.blueGrey.withOpacity(0.05),
+        ),
+        height: 160,
+        width: double.infinity,
+        child: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: TextButton(
+            child: Text(widget.title,
+                style: const TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16)),
+            onPressed: () {
+              _pickImages();
+            },
+          ),
+        ),
+      );
     }
     final selector = SizedBox(
       key: UniqueKey(),
       child: widget.addMoreBuilder != null
           ? widget.addMoreBuilder!(context, _pickImages)
           : Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: Colors.blueGrey.withOpacity(0.07),
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: TextButton(
-                  onPressed: () {
-                    _pickImages();
-                  },
-                  child: Text(
-                    widget.subtitle,
-                    style: const TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                ),
-              ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Colors.blueGrey.withOpacity(0.07),
+        ),
+        child: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: TextButton(
+            onPressed: () {
+              _pickImages();
+            },
+            child: Text(
+              widget.subtitle,
+              style: const TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16),
             ),
+          ),
+        ),
+      ),
     );
 
     final scrollController = ScrollController();
@@ -178,13 +178,13 @@ class _MultiImagePickerViewState extends State<MultiImagePickerView> {
           );
         },
         children: widget.controller.images
-                .map<Widget>((e) => SizedBox(
-                      key: UniqueKey(),
-                      child: widget.itemBuilder != null
-                          ? widget.itemBuilder!(context, e, _deleteImage)
-                          : _ItemView(file: e, onDelete: _deleteImage,isVideo: e.extension == "mp4",),
-                    ))
-                .toList() +
+            .map<Widget>((e) => SizedBox(
+          key: UniqueKey(),
+          child: widget.itemBuilder != null
+              ? widget.itemBuilder!(context, e, _deleteImage)
+              : _ItemView(file: e, onDelete: _deleteImage,isVideo: e.extension == "mp4",),
+        ))
+            .toList() +
             (widget.controller.maxImages > widget.controller.images.length
                 ? [selector]
                 : []),
@@ -248,18 +248,19 @@ class _ItemView extends StatelessWidget {
               fit: BoxFit.cover,
             )  : !file.hasPath
                 ? Image.memory(
-                    file.bytes!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Center(child: Text('No Preview'));
-                    },
-                  )
+              file.bytes!,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return const Center(child: Text('No Preview'));
+              },
+            )
                 : Image.file(
-                    File(file.path!),
-                    fit: BoxFit.cover,
-                  ),
+              File(file.path!),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
+        // Positioned.fill(child: Container(color: Colors.grey,))
         Positioned(
           right: 0,
           top: 0,

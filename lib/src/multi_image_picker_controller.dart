@@ -13,10 +13,12 @@ import '../multi_image_picker_view.dart';
 class MultiImagePickerController with ChangeNotifier {
   final List<String> allowedImageTypes;
   final int maxImages;
+  int? maxVideoLenght;
 
   MultiImagePickerController({
     this.allowedImageTypes = const ['png', 'jpeg', 'jpg'],
     this.maxImages = 10,
+    this.maxVideoLenght
   }) {
     print('init');
   }
@@ -50,60 +52,73 @@ class MultiImagePickerController with ChangeNotifier {
           File fileori = File(element.path!);
           // if (file)
           veController = VideoPlayerController.file(fileori);
+          veController!.initialize().whenComplete(() async {
+            _videoDuration = veController!.value.duration.inSeconds;
+            print("video duration ${_videoDuration}");
 
-          // result.files.e
-          final String _videoPath = fileori.path;
+            veController!.dispose();
 
-          double _eachPart = _videoDuration / _numberOfThumbnails;
+            // result.files.e
+            final String _videoPath = fileori.path;
 
-          List<Uint8List> _byteList = [];
-          // the cache of last thumbnail
-          Uint8List _lastBytes;
+            double _eachPart = 0 / _numberOfThumbnails;
 
-          for (int i = 1; i <= _numberOfThumbnails; i++) {
-            Uint8List? _bytes;
-            _bytes = await VideoThumbnail.thumbnailData(
-              video: _videoPath,
-              imageFormat: ImageFormat.JPEG,
-              timeMs: (_eachPart * i).toInt(),
-              quality: 75,
-            );
+            List<Uint8List> _byteList = [];
+            // the cache of last thumbnail
+            Uint8List _lastBytes;
 
-            // if current thumbnail is null use the last thumbnail
-            if (_bytes != null) {
-              _lastBytes = _bytes;
-              _byteList.add(_bytes);
-            } else {
-              // _bytes = _lastBytes;
-              // _byteList.add(_bytes);
+            for (int i = 1; i <= _numberOfThumbnails; i++) {
+              Uint8List? _bytes;
+              _bytes = await VideoThumbnail.thumbnailData(
+                video: _videoPath,
+                imageFormat: ImageFormat.JPEG,
+                timeMs: (_eachPart * i).toInt(),
+                quality: 75,
+              );
+
+              // if current thumbnail is null use the last thumbnail
+              if (_bytes != null) {
+                _lastBytes = _bytes;
+                _byteList.add(_bytes);
+              } else {
+                // _bytes = _lastBytes;
+                // _byteList.add(_bytes);
+              }
             }
-          }
 
-          if (_byteList.length > 0) {
-            final tempDir = await getTemporaryDirectory();
-            await File(
-                '${tempDir.path}${DateTime.now().toString()}-${DateTime.now().microsecondsSinceEpoch}.png')
-                .create()
-                .then((value2) {
-              value2.writeAsBytesSync(_byteList.first);
+            if (_byteList.length > 0) {
+              final tempDir = await getTemporaryDirectory();
+              await File(
+                  '${tempDir.path}${DateTime.now().toString()}-${DateTime.now().microsecondsSinceEpoch}.png')
+                  .create()
+                  .then((value2) {
+                value2.writeAsBytesSync(_byteList.first);
 
-              ImageFile imageee = ImageFile(
-                  path: element.path,
-                  name: element.name, extension: element.extension!, pathThumbnail: value2.path,fileThumbnail: value2,bytes: element.bytes);
-              _addImages(result.files.where((e) => e.name == element.name).map((e) => imageee));
+                ImageFile imageee = ImageFile(
+                  // isFailed: _videoDuration >= maxVideoLenght!,
+                    path: element.path,
+                    name: element.name, extension: element.extension!, pathThumbnail: value2.path,fileThumbnail: value2,bytes: element.bytes);
+                if (_videoDuration <= maxVideoLenght!){
+                  _addImages(result.files.where((e) => e.name == element.name).map((e) => imageee));
+                }
 
-              // _addImages(result.files
-              //     .where((e) =>
-              // e.extension != null &&
-              //     allowedImageTypes.contains(e.extension?.toLowerCase()))
-              //     .map((e) => ImageFile(
-              //     name: e.name,
-              //     extension: e.extension!,
-              //     bytes: e.bytes,
-              //     path: !kIsWeb ? e.path : null, pathThumbnail: value2.path,fileThumbnail: value2)));
-              notifyListeners();
-            });
-          }
+                // _addImages(result.files
+                //     .where((e) =>
+                // e.extension != null &&
+                //     allowedImageTypes.contains(e.extension?.toLowerCase()))
+                //     .map((e) => ImageFile(
+                //     name: e.name,
+                //     extension: e.extension!,
+                //     bytes: e.bytes,
+                //     path: !kIsWeb ? e.path : null, pathThumbnail: value2.path,fileThumbnail: value2)));
+                notifyListeners();
+              });
+            }
+
+
+          });
+
+
         });
 
 
