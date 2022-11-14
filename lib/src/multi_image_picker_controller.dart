@@ -78,7 +78,7 @@ class MultiImagePickerController with ChangeNotifier {
               name: e.name,
               extension: e.extension!,
               bytes: e.bytes,
-              path: !kIsWeb ? e.path : null)));
+              path: !kIsWeb ? e.path : null, pathThumbnail: '')));
       notifyListeners();
       return true;
     }
