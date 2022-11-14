@@ -8,7 +8,7 @@ class ImageFile {
   final Uint8List? bytes;
   String? path;
   String pathThumbnail;
-  bool? isFailed;r
+  bool? isFailed;
   File? fileThumbnail;
   double? startVideo;
   double? endVideo;
