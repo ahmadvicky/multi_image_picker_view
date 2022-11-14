@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../multi_image_picker_view.dart';
 
@@ -28,58 +33,101 @@ class MultiImagePickerController with ChangeNotifier {
   /// this method open Image picking window.
   /// It returns [Future] of [bool], true if user has selected images.
   ///
-  // VideoPlayerController videoPlayerController;
-  // int _videoDuration = 0;
-  // int _numberOfThumbnails = 5;
+  VideoPlayerController? veController;
+  int _videoDuration = 0;
+  int _numberOfThumbnails = 5;
 
   Future<bool> pickImages() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
+        allowMultiple: maxImages == 1 ? false : true,
         type: FileType.custom,
         allowedExtensions: allowedImageTypes);
     if (result != null && result.files.isNotEmpty) {
 
-      // if (allowedImageTypes[0] == "mp4"){
-      //   result.files.e
-      //   final String _videoPath = video.path;
-      //
-      //   double _eachPart = _videoDuration / _numberOfThumbnails;
-      //
-      //   List<Uint8List> _byteList = [];
-      //   // the cache of last thumbnail
-      //   Uint8List _lastBytes;
-      //
-      //   for (int i = 1; i <= _numberOfThumbnails; i++) {
-      //     Uint8List? _bytes;
-      //     _bytes = await VideoThumbnail.thumbnailData(
-      //       video: _videoPath,
-      //       imageFormat: ImageFormat.JPEG,
-      //       timeMs: (_eachPart * i).toInt(),
-      //       quality: 75,
-      //     );
-      //
-      //     // if current thumbnail is null use the last thumbnail
-      //     if (_bytes != null) {
-      //       _lastBytes = _bytes;
-      //       _byteList.add(_bytes);
-      //     } else {
-      //       // _bytes = _lastBytes;
-      //       // _byteList.add(_bytes);
-      //     }
-      //   }
-      // }
+      if (allowedImageTypes[0] == "mp4"){
+        File fileori = File(result.files.first.path!);
+        // if (file)
+        veController = VideoPlayerController.file(fileori);
+
+        // result.files.e
+        final String _videoPath = fileori.path;
+
+        double _eachPart = _videoDuration / _numberOfThumbnails;
+
+        List<Uint8List> _byteList = [];
+        // the cache of last thumbnail
+        Uint8List _lastBytes;
+
+        for (int i = 1; i <= _numberOfThumbnails; i++) {
+          Uint8List? _bytes;
+          _bytes = await VideoThumbnail.thumbnailData(
+            video: _videoPath,
+            imageFormat: ImageFormat.JPEG,
+            timeMs: (_eachPart * i).toInt(),
+            quality: 75,
+          );
+
+          // if current thumbnail is null use the last thumbnail
+          if (_bytes != null) {
+            _lastBytes = _bytes;
+            _byteList.add(_bytes);
+          } else {
+            // _bytes = _lastBytes;
+            // _byteList.add(_bytes);
+          }
+        }
+
+        if (_byteList.length > 0) {
+          final tempDir = await getTemporaryDirectory();
+          await File(
+              '${tempDir.path}${DateTime.now().toString()}-${DateTime.now().microsecondsSinceEpoch}.png')
+              .create()
+              .then((value2) {
+            value2.writeAsBytesSync(_byteList.first);
+
+            _addImages(result.files
+                .where((e) =>
+            e.extension != null &&
+                allowedImageTypes.contains(e.extension?.toLowerCase()))
+                .map((e) => ImageFile(
+                name: e.name,
+                extension: e.extension!,
+                bytes: e.bytes,
+                path: !kIsWeb ? e.path : null, pathThumbnail: value2.path,fileThumbnail: value2)));
+            notifyListeners();
+
+            // videoFile.add(ImageFileUploadCommunity(
+            //     file: video,
+            //     fileAnother: fileAnother,
+            //     fileThumbnail: value2,
+            //     urlThumbnail: ""));
+
+            // setState(() {
+            //   SellonRouter.pop(context);
+            //   veController.dispose();
+            //
+            //   isLoadinguploadimage = true;
+            //   uploadSellon = false;
+            //   setState(() {
+            //     checkAgain(isVideo: true);
+            //   });
+            // });
+          });
+        }
+      } else {
+        _addImages(result.files
+            .where((e) =>
+        e.extension != null &&
+            allowedImageTypes.contains(e.extension?.toLowerCase()))
+            .map((e) => ImageFile(
+            name: e.name,
+            extension: e.extension!,
+            bytes: e.bytes,
+            path: !kIsWeb ? e.path : null, pathThumbnail: '')));
+        notifyListeners();
+      }
 
 
-      _addImages(result.files
-          .where((e) =>
-              e.extension != null &&
-              allowedImageTypes.contains(e.extension?.toLowerCase()))
-          .map((e) => ImageFile(
-              name: e.name,
-              extension: e.extension!,
-              bytes: e.bytes,
-              path: !kIsWeb ? e.path : null, pathThumbnail: '')));
-      notifyListeners();
       return true;
     }
     return false;
